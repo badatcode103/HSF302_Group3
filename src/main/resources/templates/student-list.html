@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{layout :: header(pageTitle='Student Management')}"></head>
+
+<body>
+<nav th:replace="~{layout :: navbar}"></nav>
+
+<div class="container">
+
+    <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${success}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+
+    <div th:if="${isManagerView}">
+        <h2 class="mb-3">Top 5 Students (Manager View)</h2>
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+            <tr>
+                <th>Student ID</th>
+                <th>Name</th>
+                <th>GPA</th>
+                <th>Department</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="student : ${students}">
+                <td th:text="${student.studentid}"></td>
+                <td th:text="${student.name}"></td>
+                <td th:text="${student.gpa}"></td>
+                <td th:text="${student.department.departmentname}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div th:if="${!isManagerView}">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2>Student List (Staff View)</h2>
+            <a th:href="@{/students/add}" class="btn btn-primary">Add New Student</a>
+        </div>
+
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+            <tr>
+                <th>Student ID</th>
+                <th>Name</th>
+                <th>GPA</th>
+                <th>Department</th>
+                <th>Created By</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="student : ${studentPage.content}">
+                <td th:text="${student.studentid}"></td>
+                <td th:text="${student.name}"></td>
+                <td th:text="${student.gpa}"></td>
+                <td th:text="${student.department.departmentname}"></td>
+                <td th:text="${student.createdBy}"></td>
+                <td>
+                    <div th:if="${student.createdBy == session.user.username}">
+                        <a th:href="@{/students/edit/{id}(id=${student.id})}" class="btn btn-sm btn-warning">Edit</a>
+                        <a th:href="@{/students/delete/{id}(id=${student.id})}"
+                           class="btn btn-sm btn-danger"
+                           onclick="return confirm('Are you sure you want to delete this student?')">Delete</a>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <nav th:if="${studentPage.totalPages > 1}" aria-label="Pagination">
+            <ul class="pagination justify-content-center">
+
+                <li class="page-item" th:classappend="${studentPage.first} ? 'disabled'">
+                    <a class="page-link" th:href="@{/students(page=0)}">First</a>
+                </li>
+
+                <li class="page-item" th:classappend="${!studentPage.hasPrevious()} ? 'disabled'">
+                    <a class="page-link" th:href="@{/students(page=${studentPage.number - 1})}">Previous</a>
+                </li>
+
+                <li class="page-item"
+                    th:each="i : ${#numbers.sequence(0, studentPage.totalPages - 1)}"
+                    th:classappend="${i == studentPage.number} ? 'active'">
+                    <a class="page-link" th:href="@{/students(page=${i})}" th:text="${i + 1}"></a>
+                </li>
+
+                <li class="page-item" th:classappend="${!studentPage.hasNext()} ? 'disabled'">
+                    <a class="page-link" th:href="@{/students(page=${studentPage.number + 1})}">Next</a>
+                </li>
+
+                <li class="page-item" th:classappend="${studentPage.last} ? 'disabled'">
+                    <a class="page-link" th:href="@{/students(page=${studentPage.totalPages - 1})}">Last</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+</div>
+
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>
