@@ -5,6 +5,7 @@ import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import java.time.LocalDate;
 
 @Data
@@ -46,5 +47,6 @@ public class Student {
     @NotNull(message = "Department is required")
     @ManyToOne
     @JoinColumn(name = "department_id", nullable = false)
+    @ToString.Exclude
     private Department department;
 }

@@ -62,11 +62,16 @@ public class StudentController {
                                       HttpSession session, RedirectAttributes redirectAttributes) {
 
         UserAccount user = (UserAccount) session.getAttribute("user");
+        if (user == null) {
+            redirectAttributes.addFlashAttribute("error", "Please login to continue.");
+            return "redirect:/";
+        }
+
         Student student = studentService.findById(id)
                 .orElseThrow(() -> new RuntimeException("Invalid student Id:" + id));
 
         // Kiểm tra quyền sở hữu khi EDIT (Requirement)
-        if (user.getRole() == 2 && !student.getCreatedBy().equals(user.getUsername())) {
+        if (user.getRole() == 2 && (student.getCreatedBy() == null || !student.getCreatedBy().equals(user.getUsername()))) {
             redirectAttributes.addFlashAttribute("error", "You can only edit students you created.");
             return "redirect:/students";
         }

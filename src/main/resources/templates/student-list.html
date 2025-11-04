@@ -65,7 +65,7 @@
                 <td th:text="${student.department.departmentname}"></td>
                 <td th:text="${student.createdBy}"></td>
                 <td>
-                    <div th:if="${student.createdBy == session.user.username}">
+                    <div th:if="${student.createdBy != null && student.createdBy == user.username}">
                         <a th:href="@{/students/edit/{id}(id=${student.id})}" class="btn btn-sm btn-warning">Edit</a>
                         <a th:href="@{/students/delete/{id}(id=${student.id})}"
                            class="btn btn-sm btn-danger"

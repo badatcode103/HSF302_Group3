@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -27,5 +28,6 @@ public class Department {
 
     // Thể hiện mối quan hệ 1-Nhiều: Một Department có nhiều Student
     @OneToMany(mappedBy = "department")
+    @ToString.Exclude
     private List<Student> students;
 }
