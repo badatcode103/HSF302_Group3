@@ -1,0 +1,45 @@
+# Backup version - nếu healthcheck vẫn lỗi, dùng version này
+# Tạm thời bỏ condition: service_healthy để app tự retry kết nối
+
+version: '3.8'
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: hsf302-sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "${SA_PASSWORD:-Dongl@m2025}"
+      MSSQL_PID: "${MSSQL_PID:-Developer}"
+    ports:
+      - "${SQL_PORT:-1435}:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    networks:
+      - hsf302-network
+    restart: unless-stopped
+
+  app:
+    image: hsf302-group3:latest
+    container_name: hsf302-app
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: "jdbc:sqlserver://sqlserver:1433;databaseName=${DB_NAME:-HSF302};trustServerCertificate=true"
+      SPRING_DATASOURCE_USERNAME: "${DB_USERNAME:-sa}"
+      SPRING_DATASOURCE_PASSWORD: "${DB_PASSWORD:-Dongl@m2025}"
+      SERVER_PORT: "8080"
+    ports:
+      - "${APP_PORT:-8080}:8080"
+    depends_on:
+      - sqlserver  # Chỉ chờ container start, không chờ healthy
+    networks:
+      - hsf302-network
+    restart: unless-stopped
+
+networks:
+  hsf302-network:
+    driver: bridge
+
+volumes:
+  sqlserver_data:
+

@@ -19,7 +19,10 @@
 
 
     <div th:if="${isManagerView}">
-        <h2 class="mb-3">Top 5 Students (Manager View)</h2>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2>Top 5 Students (Manager View)</h2>
+            <a th:href="@{/departments}" class="btn btn-primary">Department Management</a>
+        </div>
         <table class="table table-striped table-hover">
             <thead class="table-dark">
             <tr>

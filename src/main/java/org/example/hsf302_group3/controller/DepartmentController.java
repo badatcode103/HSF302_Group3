@@ -20,14 +20,14 @@ public class DepartmentController {
     @GetMapping
     public String showDepartmentList(Model model) {
         model.addAttribute("departments", departmentService.findAll());
-        return "department-list"; // Trả về file department-list.html
+        return "department-list";
     }
 
     @GetMapping("/add")
     public String showAddDepartmentForm(Model model) {
         model.addAttribute("department", new Department());
         model.addAttribute("pageTitle", "Add New Department");
-        return "department-form"; // Trả về file department-form.html
+        return "department-form";
     }
 
     @GetMapping("/edit/{id}")
@@ -60,7 +60,7 @@ public class DepartmentController {
             departmentService.deleteById(id);
             redirectAttributes.addFlashAttribute("success", "Department deleted successfully!");
         } catch (Exception e) {
-            // Bắt lỗi nếu xóa Department vẫn còn Student (lỗi khóa ngoại)
+
             redirectAttributes.addFlashAttribute("error", "Cannot delete department. It may still have students associated with it.");
         }
         return "redirect:/departments";
